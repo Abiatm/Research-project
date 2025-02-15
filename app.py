@@ -1,7 +1,5 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 import pickle
 import pandas as pd 
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,14 +17,15 @@ app.add_middleware(
 
 # Load the trained model
 try:
-    model = pickle.load(open("Reseach_project_model.pkl", "rb"))  # Use the actual file path
+    with open("Reseach_project_model.pkl", "rb") as model_file:
+        loaded_model = pickle.load(model_file)
     app.state.model_loaded = True 
 except FileNotFoundError:
     app.state.model_loaded = False 
-    app.state.error_message = "Model file not found."
+    app.state.error_message = "Model file 'Ml_project_model.pkl' not found."
 except Exception as e:
     app.state.model_loaded = False 
-    app.state.error_message = f"Error loading models: {e}"
+    app.state.error_message = f"Error loading model: {e}"
 
 @app.get("/")
 def home():
@@ -52,7 +51,7 @@ async def predict(data: dict):
         # Create a DataFrame from the input dictionary
         df = pd.DataFrame([data], columns=['ground', 'red', 'yellow', 'blue', 'Ir', 'Iy', 'Ib', 'Vr', 'Vy', 'Vb'])
 
-        prediction = model.predict(df)[0] 
+        prediction = loaded_model.predict(df)[0] 
 
         # Convert prediction to "healthy" or "unhealthy"
         health_status = "healthy" if prediction == 0 else "unhealthy"
@@ -63,4 +62,7 @@ async def predict(data: dict):
         return JSONResponse({"error": str(e)}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000) 
+
+
+    
