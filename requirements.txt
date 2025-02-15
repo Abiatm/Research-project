@@ -1,4 +1,3 @@
-fastapi[all]
-gunicorn
+fastapi
 uvicorn
-pickle5==0.0.12
+pickle5
