@@ -1,3 +1,4 @@
-fastapi
-gunicorn
+fastapi[all]
 uvicorn
+scikit-learn
+pandas
