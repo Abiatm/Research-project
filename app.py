@@ -9,7 +9,7 @@ app = FastAPI(debug=True)
 def home():
     return {"text": "Prediction result"}
 
-@app.post("/predict")  # Changed to POST for prediction requests
+@app.post("/predict")
 def predict(ground: str, red: str, yellow: str, blue: str, Ir: str, Iy: str, Ib: str, Vr: str, Vy: str, Vb: str):
     try:
         model = pickle.load(open("Reseach_project_model.pkl", "rb"))
@@ -20,10 +20,10 @@ def predict(ground: str, red: str, yellow: str, blue: str, Ir: str, Iy: str, Ib:
         else:
             result = "unhealthy"
 
-        return {"prediction": result}  # Changed key to "prediction" for consistency
+        return {"prediction": result}
 
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10000)  # Changed for Render deployment
