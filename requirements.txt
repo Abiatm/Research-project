@@ -1,4 +1,5 @@
 fastapi[all]
+gunicorn
 uvicorn
 scikit-learn
 pandas
